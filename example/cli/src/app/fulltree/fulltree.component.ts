@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
-import { TreeNode, TreeModel, TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
+import { Component, Input, ViewChild } from '@angular/core';
+import { TreeComponent , TreeNode, TreeModel, TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 
-const actionMapping:IActionMapping = {
+const actionMapping: IActionMapping = {
   mouse: {
     contextMenu: (tree, node, $event) => {
       $event.preventDefault();
@@ -24,91 +24,111 @@ const actionMapping:IActionMapping = {
 @Component({
   selector: 'app-fulltree',
   styles: [
-    `button: {
-        line - height: 24px;
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
-        border: none;
-        border-radius: 2px;
-        background: #A3D9F5;
-        cursor: pointer;
-        margin: 0 3px;
-      }`
+        `
+
+      md-sidenav {
+        width: 300px;
+      }
+
+      .tree-container: {
+        height: 1200px;
+      }
+      `
   ],
   template: `
-  <form>
-    <input #filter (keyup)="filterNodes(filter.value, tree)" placeholder="filter nodes"/>
-  </form>
-  <div style="height: 400px; width: 300px">
+  <md-sidenav-container>
 
-    <tree-root
-      #tree
-      [nodes]="nodes"
-      [options]="customTemplateStringOptions"
-      [focused]="true"
-      (event)="onEvent($event)"
-      (initialized)="onInitialized(tree)"
-      
-    >
-      <ng-template #treeNodeTemplate let-node>
-        <span title="{{node.data.subTitle}}">{{ node.data.name }}</span>
-        <span class="pull-right">{{ childrenCount(node) }}</span>
-        <button (click)="go($event)">Custom Action</button>
-      </ng-template>
-      <ng-template #loadingTemplate>Loading, please hold....</ng-template>
-    </tree-root>
-  </div>
-  <br>
-  <p>Keys:</p>
-  down | up | left | right | space | enter
-  <p>Mouse:</p>
-  click to select | shift+click to select multi
-  <p>API:</p>
-  <button (click)="tree.treeModel.focusNextNode()">next node</button>
-  <button (click)="tree.treeModel.focusPreviousNode()">previous node</button>
-  <button (click)="tree.treeModel.focusDrillDown()">drill down</button>
-  <button (click)="tree.treeModel.focusDrillUp()">drill up</button>
-  <button (click)="customTemplateStringOptions.allowDrag = true">allowDrag</button>
-  <p></p>
-  <button
-    [disabled]="!tree.treeModel.getFocusedNode()"
-    (click)="tree.treeModel.getFocusedNode().toggleActivated()">
-    {{ tree.treeModel.getFocusedNode()?.isActive ? 'deactivate' : 'activate' }}
-  </button>
-  <button
-    [disabled]="!tree.treeModel.getFocusedNode()"
-    (click)="tree.treeModel.getFocusedNode().toggleExpanded()">
-    {{ tree.treeModel.getFocusedNode()?.isExpanded ? 'collapse' : 'expand' }}
-  </button>
-  <button
-    [disabled]="!tree.treeModel.getFocusedNode()"
-    (click)="tree.treeModel.getFocusedNode().blur()">
-    blur
-  </button>
-  <button
-    (click)="addNode(tree)">
-    Add Node
-  </button>
-  <button
-    (click)="activateSubSub(tree)">
-    Activate inner node
-  </button>
-  <button
-    (click)="tree.treeModel.expandAll()">
-    Expand All
-  </button>
-  <button
-    (click)="tree.treeModel.collapseAll()">
-    Collapse All
-  </button>
-  <button
-    (click)="activeNodes(tree.treeModel)">
-    getActiveNodes()
-  </button>
+    <md-sidenav mode="side" opened="true">
+      <!-- sidenav content -->
+
+      <form>
+        <input #filter (keyup)="filterNodes(filter.value, tree)" placeholder="filter nodes"/>
+      </form>
+
+      <div style="height: 800px;">
+        <tree-root
+          #tree
+          [nodes]="nodes"
+          [options]="customTemplateStringOptions"
+          [focused]="true"
+          (event)="onEvent($event)"
+          (initialized)="onInitialized(tree)"
+
+        >
+          <ng-template #treeNodeTemplate let-node>
+            <md-checkbox
+            (change)="check(node, !node.data.checked)"
+            [indeterminate]="node.data.indeterminate"
+            [checked]="node.data.checked">
+            </md-checkbox>
+            <span title="{{node.data.subTitle}}">{{ node.data.name }}</span>
+            <span class="pull-right">{{ childrenCount(node) }}</span>
+          </ng-template>
+          <ng-template #loadingTemplate>Loading, please hold....</ng-template>
+        </tree-root>
+      </div>
+    </md-sidenav>
+
+    <!-- primary content -->
+
+    <br>
+    <p>Keys:</p>
+    down | up | left | right | space | enter
+    <p>Mouse:</p>
+    click to select | shift+click to select multi
+    <p>API:</p>
+    <button (click)="tree.treeModel.focusNextNode()">next node</button>
+    <button (click)="tree.treeModel.focusPreviousNode()">previous node</button>
+    <button (click)="tree.treeModel.focusDrillDown()">drill down</button>
+    <button (click)="tree.treeModel.focusDrillUp()">drill up</button>
+    <button (click)="customTemplateStringOptions.allowDrag = true">allowDrag</button>
+    <p></p>
+    <button
+      [disabled]="!tree.treeModel.getFocusedNode()"
+      (click)="tree.treeModel.getFocusedNode().toggleActivated()">
+      {{ tree.treeModel.getFocusedNode()?.isActive ? 'deactivate' : 'activate' }}
+    </button>
+    <button
+      [disabled]="!tree.treeModel.getFocusedNode()"
+      (click)="tree.treeModel.getFocusedNode().toggleExpanded()">
+      {{ tree.treeModel.getFocusedNode()?.isExpanded ? 'collapse' : 'expand' }}
+    </button>
+    <button
+      [disabled]="!tree.treeModel.getFocusedNode()"
+      (click)="tree.treeModel.getFocusedNode().blur()">
+      blur
+    </button>
+    <button
+      (click)="addNode(tree)">
+      Add Node
+    </button>
+    <button
+      (click)="activateSubSub(tree)">
+      Activate inner node
+    </button>
+    <button
+      (click)="tree.treeModel.expandAll()">
+      Expand All
+    </button>
+    <button
+      (click)="tree.treeModel.collapseAll()">
+      Collapse All
+    </button>
+    <button
+      (click)="activeNodes(tree.treeModel)">
+      getActiveNodes()
+    </button>
+    <!-- <button
+    (click)="tree.sizeChanged()">
+    Size Changed()
+    </button> -->
+  </md-sidenav-container>
   `
 })
 export class FullTreeComponent {
+  @ViewChild('tree') tree: TreeComponent;
   nodes: any[];
-  nodes2 = [{name: 'root'}, {name: 'root2'}];
+  nodes2 = [{ name: 'root' }, { name: 'root2' }];
   constructor() {
   }
   ngOnInit() {
@@ -159,11 +179,11 @@ export class FullTreeComponent {
         }
       ];
 
-      for(let i = 0; i < 4; i++) {
+      for (let i = 0; i < 4; i++) {
         this.nodes.push({
           name: `rootDynamic${i}`,
           subTitle: `root created dynamically ${i}`,
-          children: new Array((i + 1) * 100).fill(null).map((item, n) => ({
+          children: new Array((i + 1) * 1000).fill(null).map((item, n) => ({
             name: `childDynamic${i}.${n}`,
             subTitle: `child created dynamically ${i}`,
             hasChildren: false
@@ -183,7 +203,7 @@ export class FullTreeComponent {
     }
   ];
 
-  getChildren(node:any) {
+  getChildren(node: any) {
     return new Promise((resolve, reject) => {
       setTimeout(() => resolve(this.asyncChildren.map((c) => {
         return Object.assign({}, c, {
@@ -215,13 +235,19 @@ export class FullTreeComponent {
       .setActiveAndVisible();
   }
 
+  actionMapping: IActionMapping = {
+    mouse: {
+      click: (tree, node) => this.check(node, !node.data.checked)
+    }
+  };
+
   customTemplateStringOptions: ITreeOptions = {
     // displayField: 'subTitle',
     isExpandedField: 'expanded',
     idField: 'uuid',
     getChildren: this.getChildren.bind(this),
-    actionMapping,
-    nodeHeight: 23,
+    actionMapping: this.actionMapping,
+    nodeHeight: 30,
     allowDrag: (node) => {
       // console.log('allowDrag?');
       return true;
@@ -231,7 +257,7 @@ export class FullTreeComponent {
       return true;
     },
     useVirtualScroll: true,
-    animateExpand: true,
+    animateExpand: false,
     animateSpeed: 30,
     animateAcceleration: 1.2
   }
@@ -250,5 +276,45 @@ export class FullTreeComponent {
 
   activeNodes(treeModel) {
     console.log(treeModel.activeNodes);
+  }
+
+  public check(node, checked) {
+    this.updateChildNodeCheckbox(node, checked);
+    this.updateParentNodeCheckbox(node.realParent);
+  }
+  public updateChildNodeCheckbox(node, checked) {
+    node.data.checked = checked;
+    if (node.children) {
+      node.children.forEach((child) => this.updateChildNodeCheckbox(child, checked));
+    }
+  }
+  public updateParentNodeCheckbox(node) {
+    if (!node) {
+      return;
+    }
+
+    let allChildrenChecked = true;
+    let noChildChecked = true;
+
+    for (const child of node.children) {
+      if (!child.data.checked || child.data.indeterminate) {
+        allChildrenChecked = false;
+      }
+      if (child.data.checked) {
+        noChildChecked = false;
+      }
+    }
+
+    if (allChildrenChecked) {
+      node.data.checked = true;
+      node.data.indeterminate = false;
+    } else if (noChildChecked) {
+      node.data.checked = false;
+      node.data.indeterminate = false;
+    } else {
+      node.data.checked = true;
+      node.data.indeterminate = true;
+    }
+    this.updateParentNodeCheckbox(node.parent);
   }
 }

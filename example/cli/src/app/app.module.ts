@@ -17,6 +17,9 @@ import { SaveRestoreComponent } from './save-restore/save-restore.component';
 import { CheckboxesComponent } from './checkboxes/checkboxes.component';
 import { DragComponent } from './drag/drag.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MdButtonModule, MdCheckboxModule, MdSidenavModule } from '@angular/material';
+
 /*
   Turn on to check if tree supports strict mode in MobX.
   But remember to turn off (to allow users of MobX not to use strict mode in their apps)
@@ -46,6 +49,10 @@ useStrict(true);
     FormsModule,
     HttpModule,
     TreeModule,
+    BrowserAnimationsModule,
+    MdButtonModule,
+    MdCheckboxModule,
+    MdSidenavModule,
     AppRoutingModule
   ],
   providers: [],
